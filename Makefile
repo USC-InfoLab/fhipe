@@ -20,17 +20,17 @@ obj: $(OBJPATHS)
 
 
 $(BUILD):
-        mkdir -p $(BUILD)
+		mkdir -p $(BUILD)
 
 $(BUILD)/%.o: $(FHIPE)/%.c | $(BUILD)
-        $(CC) $(CFLAGS) -o $@ -c $<
+		$(CC) $(CFLAGS) -o $@ -c $<
 
 
 $(EXE): $(OBJPATHS)
-        $(CC) $(CFLAGS) -o $@ $(LDPATH) $(OBJPATHS) $(LDLIBS)
+		$(CC) $(CFLAGS) -o $@ $(LDPATH) $(OBJPATHS) $(LDLIBS)
 
 clean:
-        rm -rf $(BUILD) $(EXE) *~
+		rm -rf $(BUILD) $(EXE) *~
 
 uninstall:
-        make clean
+		make clean
