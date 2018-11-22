@@ -1,5 +1,7 @@
 # An Implementation of Function-Hiding Inner Product Encryption (FHIPE) #
 
+A fork to update for Ubuntu 18.04 and new macOS version.
+
 This is an implementation of the function-hiding inner product encryption scheme 
 described here: (link to be posted)
 

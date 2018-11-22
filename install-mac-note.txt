@@ -1,7 +1,5 @@
 git clone https://github.com/USC-InfoLab/fhipe.git
 
-git submodule update --init --recursive
-
 brew install gmp
 
 brew install libomp
