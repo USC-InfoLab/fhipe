@@ -1,0 +1,1 @@
+sudo apt-get -y install flex bison python-dev libmpfr-dev autoconf libtool make libgmp3-dev libmpfr-dev libmpfr-doc libmpfr4 libmpfr4-dbg libssl-dev python3 python3-dev python3-setuptools

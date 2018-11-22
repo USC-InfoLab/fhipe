@@ -1,6 +1,7 @@
 CC = gcc
 INCPATHS = -I/usr/local/include -Iflint
-CFLAGS = -g -Wall -fopenmp -std=c11 -O3 $(INCPATHS)
+CFLAGS = -g -Wall -Xpreprocessor -fopenmp -lomp -std=c11 -O3 $(INCPATHS)
+# CFLAGS = -g -Wall -fopenmp -std=c11 -O3 $(INCPATHS)
 LDLIBS = -lflint -lgmp -lmpfr -lm -lssl -lcrypto
 LDPATH = -L/usr/local/lib -Lflint
 

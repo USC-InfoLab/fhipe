@@ -28,5 +28,7 @@ WORKDIR fhipe
 RUN export CFLAGS="-O3"
 RUN make install
 
-RUN python3 tests/test_ipe.py
+RUN ldconfig
+
+#RUN python3 tests/test_ipe.py
 
