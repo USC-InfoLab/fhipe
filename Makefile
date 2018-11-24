@@ -1,10 +1,10 @@
 CC = gcc
-INCPATHS = -I/usr/local/include -Iflint
+INCPATHS = -I/usr/local/include
 #macOS
 #CFLAGS = -g -Wall -Xpreprocessor -fopenmp -lomp -std=c11 -O3 $(INCPATHS)
 CFLAGS = -g -Wall -fopenmp -std=c11 -O3 $(INCPATHS)
 LDLIBS = -lflint -lgmp -lmpfr -lm -lssl -lcrypto
-LDPATH = -L/usr/local/lib -Lflint
+LDPATH = -L/usr/local/lib
 
 FHIPE = fhipe
 BUILD = $(FHIPE)/build

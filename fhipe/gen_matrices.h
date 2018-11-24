@@ -24,7 +24,7 @@
 #include <gmp.h>
 #include <assert.h>
 #include <omp.h>
-#include "../flint/fmpz_mat.h"
+#include <flint/fmpz_mat.h>
 #include "cryptorand.h"
 
 /**

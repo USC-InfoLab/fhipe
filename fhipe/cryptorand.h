@@ -31,7 +31,7 @@
 #include <mpfr.h>
 #include <openssl/evp.h>
 #include <openssl/sha.h>
-#include "../flint/fmpz.h"
+#include <flint/fmpz.h>
 
 extern int errno;
 
