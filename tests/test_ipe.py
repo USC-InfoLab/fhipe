@@ -69,6 +69,7 @@ def test_tife():
     cty = tife.encryptR(sk, y)
     result = tife.decrypt(pp, ctx, cty)
     assert result == f(x, y), "Failed test_tife"
+    print("Done test_tife()")
 
 
 test_ipe()

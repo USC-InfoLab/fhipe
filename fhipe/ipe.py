@@ -79,17 +79,18 @@ def keygen(sk, x):
     n = len(x)
     alpha = group.random(ZR)
 
-    k1 = [0] * n
+    k1 = (g1 ** alpha) ** detB
+
+    k2 = [0] * n
     for j in range(n):
         sum = 0
         for i in range(n):
             sum += x[i] * B[i][j]
-        k1[j] = alpha * sum
+        k2[j] = alpha * sum
 
     for i in range(n):
-        k1[i] = g1 ** k1[i]
+        k2[i] = g1 ** k2[i]
 
-    k2 = (g1 ** alpha) ** detB
 
     return (k1, k2)
 
@@ -103,17 +104,17 @@ def encrypt(sk, x):
     n = len(x)
     beta = group.random(ZR)
 
-    c1 = [0] * n
+    c1 = g2 ** beta
+
+    c2 = [0] * n
     for j in range(n):
         sum = 0
         for i in range(n):
             sum += x[i] * Bstar[i][j]
-        c1[j] = beta * sum
+        c2[j] = beta * sum
 
     for i in range(n):
-        c1[i] = g2 ** c1[i]
-
-    c2 = g2 ** beta
+        c2[i] = g2 ** c2[i]
 
     return (c1, c2)
 
@@ -128,10 +129,10 @@ def decrypt(pp, skx, cty, max_innerprod=100):
     (k1, k2) = skx
     (c1, c2) = cty
 
-    t1 = innerprod_pair(c1, k1)
-    t2 = pair(c2, k2)
+    d1 = pair(k1, c1)
+    d2 = innerprod_pair(k2, c2)
 
-    return solve_dlog_bsgs(t2, t1, max_innerprod + 1)
+    return solve_dlog_bsgs(d1, d2, max_innerprod + 1)
 
 
 def parse_matrix(matrix_str, group):
