@@ -1,6 +1,6 @@
 """
 Copyright (c) 2016, Kevin Lewi
- 
+
 Permission to use, copy, modify, and/or distribute this software for any
 purpose with or without fee is hereby granted, provided that the above
 copyright notice and this permission notice appear in all copies.
@@ -18,10 +18,10 @@ PERFORMANCE OF THIS SOFTWARE.
 Implementation of function-hiding inner product encryption (FHIPE).
 """
 
-import sys, os, math
+import os, math
 
 from charm.toolbox.pairinggroup import PairingGroup, ZR, G1, G2, GT, pair
-from subprocess import call, Popen, PIPE
+from subprocess import Popen, PIPE
 
 
 def setup(n, group_name='MNT159', simulated=False):

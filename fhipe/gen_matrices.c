@@ -1,10 +1,10 @@
 /**
  * Copyright (c) 2016, Kevin Lewi
- * 
+ *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
  * copyright notice and this permission notice appear in all copies.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
  * REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
  * FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
@@ -39,22 +39,16 @@ void fmpz_mat_mul_modp(fmpz_mat_t a, fmpz_mat_t b, fmpz_mat_t c, int n,
 
 void print_random_matrices_with_adj(char *n_str, char *p_str, char *simulated,
     char *seed) {
+  // parsing
   int n = atoi(n_str);
   int is_simulated_setup = atoi(simulated);
+
+  //define parameters and initialize
   cryptorand_t randstate;
   cryptorand_initseed(randstate, seed ? seed : "", NULL);
+
   fmpz_t modp;
   fmpz_init(modp);
-  fmpz_set_str(modp, p_str, 10);
-
-  fmpz_mat_t a;
-  fmpz_mat_init(a, n, n);
- 
-  for(int i = 0; i < n; i++) {
-    for(int j = 0; j < n; j++) {
-      fmpz_randm_crypto(fmpz_mat_entry(a, i, j), randstate, modp);
-    }
-  }
 
   fmpz_t det;
   fmpz_init(det);
@@ -68,6 +62,48 @@ void print_random_matrices_with_adj(char *n_str, char *p_str, char *simulated,
   fmpz_mat_t check;
   fmpz_mat_init(check, n, n);
 
+  fmpz_mat_t M;
+  fmpz_mat_init(M, n, n);
+
+  //set values
+  fmpz_set_str(modp, p_str, 10);
+
+
+  int error = random_matrices_with_adj(n, is_simulated_setup, randstate, modp, det, M, adjugate, prod, check);
+
+  if (!error) {
+    /* print the resulting values */
+    fmpz_fprint(stdout, det);
+    printf("\n");
+    fmpz_mat_fprint(stdout, M);
+    printf("\n");
+    fmpz_mat_transpose(adjugate, adjugate);
+    fmpz_mat_fprint(stdout, adjugate);
+    printf("\n");
+  }
+
+  // clean up
+  fmpz_mat_clear(M);
+  fmpz_mat_clear(prod);
+  fmpz_mat_clear(check);
+
+  fmpz_mat_clear(adjugate);
+  fmpz_clear(det);
+  fmpz_clear(modp);
+
+  cryptorand_clear(randstate);
+}
+
+int random_matrices_with_adj(int n, int is_simulated_setup,
+                             cryptorand_t randstate, fmpz_t modp,
+                             fmpz_t det, fmpz_mat_t M, fmpz_mat_t adjugate,
+                             fmpz_mat_t prod, fmpz_mat_t check) {
+  for(int i = 0; i < n; i++) {
+    for(int j = 0; j < n; j++) {
+      fmpz_randm_crypto(fmpz_mat_entry(M, i, j), randstate, modp);
+    }
+  }
+
   if(is_simulated_setup) {
     /* set det and adj randomly */
     fmpz_randm_crypto(det, randstate, modp);
@@ -78,16 +114,16 @@ void print_random_matrices_with_adj(char *n_str, char *p_str, char *simulated,
       }
     }
   } else {
-    fmpz_modp_matrix_det(det, a, n, modp);
+    fmpz_modp_matrix_det(det, M, n, modp);
     if (fmpz_is_zero(det)) {
       fprintf(stderr, "ERROR: Random matrix was not invertible.\n");
-      goto exit_det;
+      return 1;
     }
 
-    fmpz_modp_matrix_adjugate(adjugate, a, n, modp);
+    fmpz_modp_matrix_adjugate(adjugate, M, n, modp);
     fmpz_mat_transpose(adjugate, adjugate);
 
-        fmpz_mat_mul_modp(prod, a, adjugate, n, modp);
+    fmpz_mat_mul_modp(prod, M, adjugate, n, modp);
 
     /* check that the adjugate and determinant were computed correctly */
     fmpz_mat_one(check);
@@ -96,29 +132,11 @@ void print_random_matrices_with_adj(char *n_str, char *p_str, char *simulated,
     int status = fmpz_mat_equal(prod, check);
     if (status == 0) {
       fprintf(stderr, "ERROR: Failed to produce the proper matrices.\n");
-      goto exit;
+      return 1;
     }
   }
 
-  /* print the resulting values */
-  fmpz_fprint(stdout, det);
-  printf("\n");
-  fmpz_mat_fprint(stdout, a);
-  printf("\n");
-  fmpz_mat_transpose(adjugate, adjugate);
-  fmpz_mat_fprint(stdout, adjugate);
-  printf("\n");
-
-exit:
-  fmpz_mat_clear(a);
-  fmpz_mat_clear(prod);
-  fmpz_mat_clear(check);
-
-exit_det:
-  fmpz_mat_clear(adjugate);
-  fmpz_clear(det);
-
-  cryptorand_clear(randstate);
+  return 0;
 }
 
 void fmpz_modp_matrix_det(fmpz_t det, fmpz_mat_t a, int n, fmpz_t p) {
@@ -128,7 +146,7 @@ void fmpz_modp_matrix_det(fmpz_t det, fmpz_mat_t a, int n, fmpz_t p) {
     fmpz_set(det, fmpz_mat_entry(a, 0, 0));
     return;
   }
-	
+
   if (n == 2) {
     fmpz_t tmp1;
     fmpz_init(tmp1);
@@ -246,7 +264,7 @@ void fmpz_modp_matrix_adjugate(fmpz_mat_t b, fmpz_mat_t a, int n, fmpz_t p) {
           fmpz_set(fmpz_mat_entry(c, i1, j1), fmpz_mat_entry(a, i_iter, j_iter));
         }
       }
-			
+
       /* Calculate the determinant */
       fmpz_modp_matrix_det(det, c, n-1, p);
 

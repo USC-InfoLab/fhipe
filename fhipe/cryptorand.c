@@ -1,10 +1,10 @@
 /**
  * Copyright (c) 2016, Kevin Lewi
- * 
+ *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
  * copyright notice and this permission notice appear in all copies.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
  * REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
  * FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
@@ -46,20 +46,14 @@ void cryptorand_initseed(cryptorand_t state, char *seed, char *additional) {
   SHA256_CTX sha256;
   if(!SHA256_Init(&sha256)) {
     perror("Error in calling SHA256_Init");
-    goto exit_digest;
   }
-  
-  if(!SHA256_Update(&sha256, digest, strlen(digest))) {
+  else if(!SHA256_Update(&sha256, digest, strlen(digest))) {
     perror("Error in calling SHA256_Update");
-    goto exit_digest;
   }
-
-  if(!SHA256_Final(state->key, &sha256)) {
+  else if(!SHA256_Final(state->key, &sha256)) {
     perror("Error in calling SHA256_Final");
-    goto exit_digest;
   }
 
-exit_digest:
   free(digest);
 }
 
@@ -97,7 +91,7 @@ void mpz_urandomb_crypto(mpz_t rop, cryptorand_t state, mp_bitcnt_t n) {
     ctr_iv = state->ctr++;
   }
 
-  memcpy(state->iv, &ctr_iv, sizeof(ctr_iv)); 
+  memcpy(state->iv, &ctr_iv, sizeof(ctr_iv));
   mp_bitcnt_t nb = n/8+1; // number of bytes
 
   if(!(state->ctx = EVP_CIPHER_CTX_new())) {
@@ -168,10 +162,10 @@ void mpz_urandomb_crypto(mpz_t rop, cryptorand_t state, mp_bitcnt_t n) {
     fprintf(stderr, "Error in parsing randomness.\n");
   }
 
-  fclose(fp); 
+  fclose(fp);
 
 buf_exit:
-  free(buf); 
+  free(buf);
 
 output_exit:
   free(output);

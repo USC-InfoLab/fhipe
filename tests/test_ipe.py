@@ -21,11 +21,10 @@ encryption.
 
 # Path hack
 import sys, os
+import random
 
 sys.path.insert(0, os.path.abspath('.'))
 sys.path.insert(1, os.path.abspath('..'))
-
-import random
 
 
 def test_ipe():
@@ -34,14 +33,19 @@ def test_ipe():
     """
     print("Start test_ipe()")
 
-    from fhipe import ipe, tife
+    from fhipe import ipe
 
     n = 10
     M = 20
-    x = [random.randint(0, M) for i in range(n)]
-    y = [random.randint(0, M) for i in range(n)]
+    # x = [random.randint(0, M) for i in range(n)]
+    # y = [random.randint(0, M) for i in range(n)]
+    x = [0] * n
+    y = [0] * n
+    x[1] = 1
+    y[2] = 1
 
     checkprod = sum(map(lambda i: x[i] * y[i], range(n)))
+    print('checkprod=', checkprod)
 
     (pp, sk) = ipe.setup(n)
     skx = ipe.keygen(sk, x)
@@ -57,9 +61,13 @@ def test_tife():
     toy parameters.
     """
     print("Start test_tife()")
-    from fhipe import ipe, tife
+
+    def test_f(x, y):
+        return 1 if x < y else 0
+
+    from fhipe import tife
     N = 30
-    f = lambda x, y: 1 if x < y else 0
+    f = test_f
 
     x = random.randint(0, N - 1)
     y = random.randint(0, N - 1)
