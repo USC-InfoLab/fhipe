@@ -6,7 +6,7 @@ RUN apt-get -yqq install software-properties-common gcc autoconf libssl1.0-dev l
 # install pbc
 RUN wget https://crypto.stanford.edu/pbc/files/pbc-0.5.14.tar.gz
 RUN tar xvvf pbc-0.5.14.tar.gz
-WORKDIR pbc-0.5.14/
+WORKDIR /pbc-0.5.14/
 RUN ./configure && make && make install
 RUN ldconfig
 WORKDIR /
@@ -15,7 +15,7 @@ RUN pip3 install charm-crypto
 
 # install fhipe
 ADD . / fhipe/
-WORKDIR fhipe/
+WORKDIR /fhipe/
 RUN make clean && make
 
 # test

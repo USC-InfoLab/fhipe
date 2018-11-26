@@ -27,16 +27,6 @@ int main(int argc, char *argv[]) {
   return 0;
 }
 
-void fmpz_mat_mul_modp(fmpz_mat_t a, fmpz_mat_t b, fmpz_mat_t c, int n,
-    fmpz_t p) {
-  fmpz_mat_mul(a, b, c);
-  for(int i = 0; i < n; i++) {
-    for(int j = 0; j < n; j++) {
-      fmpz_mod(fmpz_mat_entry(a, i, j), fmpz_mat_entry(a, i, j), p);
-    }
-  }
-}
-
 void print_random_matrices_with_adj(char *n_str, char *p_str, char *simulated,
     char *seed) {
   // parsing
@@ -209,7 +199,7 @@ void fmpz_modp_matrix_det(fmpz_t det, fmpz_mat_t a, int n, fmpz_t p) {
       fmpz_mul(multfactor, multfactor, fmpz_mat_entry(m, i, j));
       fmpz_mod(multfactor, multfactor, p);
 
-#pragma omp parallel for
+      #pragma omp parallel for
       for(int k = j; k < n; k++) {
         fmpz_t tmp2;
         fmpz_init(tmp2);
@@ -279,4 +269,14 @@ void fmpz_modp_matrix_adjugate(fmpz_mat_t b, fmpz_mat_t a, int n, fmpz_t p) {
 
   fmpz_clear(det);
   fmpz_mat_clear(c);
+}
+
+void fmpz_mat_mul_modp(fmpz_mat_t a, fmpz_mat_t b, fmpz_mat_t c, int n,
+    fmpz_t p) {
+  fmpz_mat_mul(a, b, c);
+  for(int i = 0; i < n; i++) {
+    for(int j = 0; j < n; j++) {
+      fmpz_mod(fmpz_mat_entry(a, i, j), fmpz_mat_entry(a, i, j), p);
+    }
+  }
 }
